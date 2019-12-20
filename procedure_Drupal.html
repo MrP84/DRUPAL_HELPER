@@ -1,0 +1,138 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+  <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+  <h1 class="main-title">procédure d'installation<span class="bolder"> drupal</span></h1>
+  <div class="main-content">
+    <form action="#" class="form-content">
+      <div class="form-content--wrapper">
+        <label for="project-name">Nom du projet : </label>
+        <input type="text" value="" class="form-content-input" id="project-name" required/>
+      </div>
+      <div class="form-content--wrapper">
+        <label for="repo-name">Nom du repo : </label>
+        <input type="text" value="" class="form-content-input" id="repo-name"required/>
+      </div>
+      <div class="form-content--wrapper">
+        <label for="uri-name">Nom de l'uri (faculatif) : </label>
+        <input type="text" class="form-content-input" id="uri-name"/>
+      </div>
+      <input type="button" class="form-content-validator" value="Valider">
+    </form>
+
+    <div class="result-display">
+      <p class="result-display--text">1 - Cloner le repo distant : </p>
+      <div class="result-display--wrapper">
+        <pre class="result-display--content
+" id="js-content1">git clone https://github.com/archriss/<span class="repo-name">NOM DU REPO</span></pre>
+      </div>
+      <p class="result-display--text">2 - Créer une nouvelle branche</p>
+      <div class="result-display--wrapper">
+        <pre class="result-display--content
+" id="js-content2">git checkout -b integration </pre>
+      </div>
+      <p class="result-display--text">3 - lancer un composer install </p>
+      <div class="result-display--wrapper">
+        <pre class="result-display--content
+" id="js-content3">composer install </pre>
+      </div>
+      <p class="result-display--text">4 - Récupérer la base de données sur le serveur de dev (info de connection dans le freedcamp) : </p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content
+" id="js-content4">ssh archriss@vps598410.ovh.net</pre>
+      <pre class="result-display--content
+" id="js-content41">cd home/dev/<span class="project-name">NOM DU PROJET</span>/www/web/sites</pre>
+      <pre class="result-display--content" id="js-content42">../../vendor/bin/drush<span class="uri-name">—-uri=nom_de_l’uri</span> sql-dump --result-file=<span class="base-name">NOM DE LA BASE</span>.sql
+</pre>
+      <pre class="result-display--content">cd ..</pre>
+      <pre class="result-display--content" id="js-content43">gzip <span class="base-name">NOM DE LA BASE</span>.sql</pre>
+      </div>
+      <p class="result-display--text">Ouvrir une autre fenêtre à la racine du projet en local</p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content" id="js-content44">cd ~/Documents/PROJETS/<span class="repo-name">NOM DU REPERTOIRE CLONE</span>
+</pre>
+      <pre class="result-display--content" id="js-content45">scp archriss@vps598410.ovh.net:/home/dev/<span class="project-name">NOM DU PROJET</span>/www/web/<span class="base-name">NOM DE LA BASE</span>.sql.gz ./
+</pre>
+      <pre class="result-display--content" id="js-content46">gunzip <span class="base-name">NOM DE LA BASE</span>.sql.gz</pre>
+      </div>
+      <p class="result-display--text">Retourner sur le serveur pour supprimer le dump</p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content" id="js-content47">rm <span class="base-name">NOM DE LA BASE</span>.sql.gz</pre>
+      </div>
+      <p class="result-display--text">5 - Créer une base vide dans PhpMyAdmin et y importer la base qu'on vient de récupérer :</p>
+      <p class="result-display--text shifted">Soit directement dans PMA</p>
+      <p class="result-display--text shifted">Soit en ligne de commande : </p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content" id="js-content5">mysql -u LOGIN -p <span class="project-name">BDD_NAME</span> < /Documents/PROJETS/<span class="repo-name">NOM DU REPERTOIRE CLONE</span>/www/web/<span class="base-name">NOM DE LA BASE</span>.sql</pre>
+      </div>
+      <p class="result-display--text">6 - Créer un virtual host sur la machine : </p>
+      <div class="result-display--wrapper">
+        <pre class="result-display--content">sudo vi /etc/hosts</pre>
+      </div>
+      <p class="result-display--text">Ecrire à la suite des autres lignes : </p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content">127.0.0.1 <span class="project-name">NOM DU PROJET</span>.local</pre>
+      </div>
+      <p class="result-display--text">7 - Ajouter une règle dans httpd-vhosts.conf</p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content">Ouvrir /Applications/MAMP/conf/apache/extra/httpd-vhosts.conf</pre>
+      </div>
+      <p class="result-display--text">Ajouter la règle : </p>
+      <div class="result-display--wrapper">
+        <pre class="result-display--content long">&lt;VirtualHost *:8888&gt;<br/><span class="longer">DocumentRoot "/Users/guillaumep/Documents/PROJETS/<span class="repo-name">NOM DU REPERTOIRE CLONE</span>/web"</span><br/><span class="longer">ServerName <span class="project-name">NOM DU PROJET</span>.local</span><br/><span class="longer">ErrorLog "logs/<span class="project-name">NOM DU PROJET</span>.local-error_log"</span><br/><span class="longer">CustomLog "logs/<span class="project-name">NOM DU PROJET</span>.local-access_log" common</span><br/>&lt;/VirtualHost&gt;</pre>
+      </div>
+      <p class="result-display--text" id="js-content8">8 - Créer un fichier .env à la racine du projet et y mettre les informations du wiki ou celles du serveur de dev. Si absentes : </p>
+      <div class="result-display--wrapper">
+        <pre class="result-display--content long">ENVIRONMENT=DEV<br/><br/>MYSQL_DATABASE=<span class="project-name">NOM DELA BASE CREEE DANS PMA</span><br/>MYSQL_HOSTNAME=127.0.0.1<br/># MYSQL_HOSTNAME=localhost (au choix)<br/>MYSQL_USER=root<br/>MYSQL_PASSWORD=root<br/>MYSQL_PORT=8889 (à vérifier dans MAMP/Préférences/Ports)<br/><br/>DEFAULT_HOST=<span class="project-name">NOM DU PROJET</span>.local</pre>
+      </div>
+      <p class="result-display--text" id="js-content9">9 - Récupérer le dossier files du serveur : </p>
+      <p class="result-display--text">Soit via FileZilla avec les infos de connection (plus rapide)</p>
+      <p class="result-display--text">Soit en ligne de commande : </p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content">cd ~/Documents/PROJETS/<span class="repo-name">NOM DU REPERTOIRE CLONE</span>/web/sites/default/</pre>
+      <pre class="result-display--content">scp -r archriss@vps598410.ovh.net:/home/dev/<span class="project-name">NOM DU PROJET</span>/www/web/sites/default/files ./</pre>
+      </div>
+      <p class="result-display--text" id="js-content10">10 - vider les caches</p>
+      <div class="result-display--wrapper">
+      <pre class="result-display--content">cd ..</pre>
+      <pre class="result-display--content">../../vendor/bin/drush<span class="uri-name">—-uri=nom_de_l’uri</span> cr</pre>
+      </div>
+    </div>
+
+  </div>
+  <script src="js/vendor/modernizr-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('set','transport','beacon'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async></script>
+</body>
+
+</html>
